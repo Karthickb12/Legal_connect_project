@@ -3,9 +3,7 @@
     "id": "a4fab115-5dbb-4981-979d-b0f1d76531de",
     "userId": "a7268f81-4102-472a-bd40-c65b129e5e81",
     "content": "    Greenland’s prime minister has said that the Arctic island would “stand firm on dialogue, on respect and on international law” in response to U.S. President Donald Trump’s tariff threats.\n    His comments come shortly after U.S. President Donald Trump pledged to impose 10% tariffs on eight European countries from Feb. 1 until the U.S. was allowed to buy Greenland.\n    The levy will rise to 25% from June 1 if a deal is not done, Trump said.\n",
-    "media": [
-      "/uploads/cc5c5d6d-ccb8-4a08-a802-30b51c003d5a_108253954-1768822947940-gettyimages-2256770056-3h4a0630_djluzpis.webp"
-    ],
+    "media": [],
     "likes": [],
     "comments": [],
     "timestamp": "2026-01-20T13:53:47.244Z"
@@ -30,5 +28,92 @@
     ],
     "timestamp": "2025-08-17T16:49:03.774Z",
     "updatedAt": "2025-08-18T17:07:08.667625Z"
+  },
+  {
+    "id": "0fadf3fc-9b2e-4c6f-8704-9f14c918786c",
+    "userId": "92ed8af0-98bb-4e17-a815-d02583304cf8",
+    "content": "Key updates in IP Law for 2026: AI-generated works continue to spark debate around copyright eligibility. Courts are emphasizing human authorship requirements. Ensure your contracts explicitly address ownership of AI-assisted deliverables!",
+    "media": [],
+    "likes": [
+      "test-user-123",
+      "a7268f81-4102-472a-bd40-c65b129e5e81",
+      "b92e5fe7-78da-4995-aa8e-b538f46801a0"
+    ],
+    "comments": [
+      {
+        "userId": "1a80f66b-cf9e-462b-98a9-d7c79c4f0343",
+        "content": "Great summary! How does this affect open-source software license compliance?",
+        "timestamp": "2026-09-21T21:33:10.455480Z"
+      },
+      {
+        "userId": "92ed8af0-98bb-4e17-a815-d02583304cf8",
+        "content": "It depends heavily on the specific license (e.g. MIT vs GPL). Open source licenses still require attribution regardless of AI training models.",
+        "timestamp": "2026-09-21T23:33:10.455480Z"
+      }
+    ],
+    "timestamp": "2026-09-21T15:33:10.455480Z"
+  },
+  {
+    "id": "4d52bf7f-d27f-4082-a962-2d23439032b0",
+    "userId": "a5edb4c1-f61f-4688-918d-d54e9f314674",
+    "content": "Know Your Rights: If detained or questioned by law enforcement, you have the right to remain silent and request legal representation immediately. Never sign statements without consulting your counsel.",
+    "media": [],
+    "likes": [
+      "test-user-123",
+      "a7268f81-4102-472a-bd40-c65b129e5e81",
+      "b92e5fe7-78da-4995-aa8e-b538f46801a0",
+      "5326ef22-5bda-4f51-adcf-9768c33fe99b"
+    ],
+    "comments": [
+      {
+        "userId": "e47113c3-a761-4d09-9519-1b4f39462505",
+        "content": "Crucial information every citizen should be aware of.",
+        "timestamp": "2026-09-22T07:33:10.455480Z"
+      }
+    ],
+    "timestamp": "2026-09-22T03:33:10.455480Z"
+  },
+  {
+    "id": "70f5a110-3dee-4801-9b3f-5eb75ac01465",
+    "userId": "e47113c3-a761-4d09-9519-1b4f39462505",
+    "content": "Question for corporate lawyers: What are the key essential terms to include in a Founders Agreement before raising pre-seed capital?",
+    "media": [],
+    "likes": [
+      "19f1669d-ff1b-402f-84f6-d8ac8fa74231"
+    ],
+    "comments": [
+      {
+        "userId": "92ed8af0-98bb-4e17-a815-d02583304cf8",
+        "content": "Focus on equity vesting schedules (e.g., 4-year with 1-year cliff), IP assignment clauses, and clear dispute resolution mechanisms.",
+        "timestamp": "2026-09-22T11:33:10.455480Z"
+      },
+      {
+        "userId": "89544420-8d7b-45cf-a895-9ddc2f8b55a4",
+        "content": "Don't forget buy-sell provisions and drag-along / tag-along rights in case of future acquisition.",
+        "timestamp": "2026-09-22T13:33:10.455480Z"
+      }
+    ],
+    "timestamp": "2026-09-22T09:33:10.455480Z"
+  },
+  {
+    "id": "87fcc775-2589-4d89-89e9-6320fff76dde",
+    "userId": "1a80f66b-cf9e-462b-98a9-d7c79c4f0343",
+    "content": "Excited to share that our university moot court team secured top honors in the National Environmental Law Moot Competition! Big thanks to our legal mentors.",
+    "media": [],
+    "likes": [
+      "test-user-123",
+      "a7268f81-4102-472a-bd40-c65b129e5e81",
+      "b92e5fe7-78da-4995-aa8e-b538f46801a0",
+      "5326ef22-5bda-4f51-adcf-9768c33fe99b",
+      "444bcb0b-70e4-4ec1-bdfa-82c785f15823"
+    ],
+    "comments": [
+      {
+        "userId": "a5edb4c1-f61f-4688-918d-d54e9f314674",
+        "content": "Congratulations Ananya! Stellar achievement for your team.",
+        "timestamp": "2026-09-22T14:48:10.455480Z"
+      }
+    ],
+    "timestamp": "2026-09-22T13:33:10.455480Z"
   }
 ]

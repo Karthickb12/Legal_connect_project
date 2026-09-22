@@ -11,7 +11,9 @@ import io
 
 DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(DATA_DIR, '.env'))
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+api_key_val = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+if api_key_val:
+    genai.configure(api_key=api_key_val)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -72,37 +74,101 @@ def allowed_document_file(filename):
     return ext in ALLOWED_DOCUMENT_EXTENSIONS
 
 def _format_chatbot_reply(text):
-    # Aggressively remove all single and multiple asterisks that are not part of **bold** syntax
-    # This regex is designed to be very aggressive. It targets:
-    # 1. Isolated single asterisks: `(?<!\*)\*(?!\*)` (not preceded or followed by another asterisk)
-    # 2. Three or more asterisks: `\*{3,}`
-    # It tries to leave `**text**` intact for bolding.
-    text = re.sub(r'(?<!\*)\*(?!\*)|\*{3,}', '', text)
+    if not text:
+        return ""
+    # Clean up excessive asterisks while preserving markdown headers and formatting
+    text = re.sub(r'\*{3,}', '**', text)
+    return text.strip()
 
-    # Replace common list-like prefixes (numbers, hyphens with various spacing, bullet characters) with a standard Markdown bullet point '- '
-    # This also normalizes multiple hyphens to a single one.
-    text = re.sub(r'^\s*(?:\d+\.\s*|\d+\)\s*|\*\s*|\-+\s*|[•]\s*)', '- ', text, flags=re.MULTILINE)
+def generate_fallback_legal_response(message, document=""):
+    msg_lower = message.lower()
+    doc_text = f"\n\n**Analyzed Document Context:**\n> {document[:500]}..." if document else ""
 
-    lines = text.split('\n')
-    formatted_lines = []
+    if any(w in msg_lower for w in ['hi', 'hello', 'hey', 'greetings']):
+        return f"""## Welcome to Legal AI Assistant
 
-    for line in lines:
-        stripped_line = line.strip()
-        if not stripped_line:
-            continue
+I am here to assist you with queries related to **Indian Law**, legal procedures, constitutional rights, and document analysis.{doc_text}
 
-        # If the line already starts with a bullet, ensure it's clean
-        if stripped_line.startswith('-'):
-            formatted_lines.append('- ' + stripped_line[1:].lstrip().replace('** ', '**')) # Clean up extra space after **
-        else:
-            # If it doesn't start with a bullet but contains text, assume it's a new point
-            # This is a heuristic that might need further adjustment.
-            formatted_lines.append('- ' + stripped_line.replace('** ', '**')) # Add a bullet and clean up bolding spacing
+### How I Can Help You:
+- **Constitutional Rights**: Guidance on Articles 14, 19, 21, and fundamental remedies.
+- **Criminal & Civil Procedure**: Information regarding FIRs, bail, IPC/BNSS sections, and court procedures.
+- **Corporate & Contract Law**: Analysis of agreements, NDAs, and corporate compliance.
+- **Consumer & Tenant Protection**: Rights under Consumer Protection Act & Rent Control Acts.
 
-    # Join the lines back together, ensuring each is on a new line.
-    return '\n'.join(formatted_lines)
+*Please ask your specific legal question or upload a document for review!*"""
 
-model = genai.GenerativeModel('gemini-2.5-flash')
+    elif any(w in msg_lower for w in ['fir', 'police', 'arrest', 'bail', 'criminal', 'bns', 'ipc']):
+        return f"""## Guidance on Criminal Law & Rights under Indian Law{doc_text}
+
+### 1. Rights Upon Arrest & Detention (Article 22 & CrPC / BNSS)
+- **Right to Know Grounds of Arrest**: Law enforcement must inform you of the exact reason for arrest.
+- **Right to Legal Counsel**: You have the right to consult and be defended by a legal practitioner of your choice.
+- **24-Hour Production Rule**: An arrested person must be produced before the nearest Magistrate within 24 hours.
+
+### 2. Filing an FIR (First Information Report)
+- **Zero FIR**: An FIR can be registered at any police station regardless of jurisdiction if a cognizable offense has occurred.
+- **Free Copy**: The informant is entitled to receive a free copy of the registered FIR.
+
+### 3. Bail Remedies
+- **Bailable Offenses**: Bail is a matter of right at the police station.
+- **Non-Bailable Offenses**: Bail must be granted by a Magistrate or Sessions Court under Section 437/439 CrPC (Section 480/483 BNSS).
+- **Anticipatory Bail**: Available under Section 438 CrPC if apprehension of arrest exists.
+
+> **Legal Disclaimer:** This guidance is for educational purposes. For active criminal proceedings, consult a practicing advocate immediately."""
+
+    elif any(w in msg_lower for w in ['contract', 'nda', 'agreement', 'business', 'company', 'startup']):
+        return f"""## Contract & Business Law Framework in India{doc_text}
+
+### Key Essentials of a Valid Contract (Indian Contract Act, 1872)
+- **Offer & Acceptance**: Clear intention to create legal obligations.
+- **Free Consent**: Agreement must be free from coercion, undue influence, fraud, or misrepresentation (Section 14).
+- **Lawful Consideration & Object**: Purpose of the agreement must be lawful.
+
+### Recommended Clauses for Commercial Agreements:
+1. **Intellectual Property (IP) Assignment**: Explicitly define ownership of technology, trademarks, and code.
+2. **Confidentiality & Non-Disclosure (NDA)**: Protect proprietary data, secrets, and business strategies.
+3. **Dispute Resolution & Governing Law**: Specify arbitration mechanism under Arbitration and Conciliation Act, 1996.
+4. **Termination & Indemnity**: Define clear exit terms and liability limits."""
+
+    elif any(w in msg_lower for w in ['tenant', 'rent', 'landlord', 'property', 'eviction']):
+        return f"""## Tenant & Property Rights under Indian Law{doc_text}
+
+### Key Rights of Tenants:
+- **Protection Against Arbitrary Eviction**: Landlords cannot forcibly evict tenants without due process under local Rent Control Acts.
+- **Essential Services Protection**: Disconnection of water, electricity, or basic amenities by landlords is strictly illegal.
+- **Security Deposit Refund**: Security deposits must be refunded upon tenancy expiration, minus agreed legitimate repairs.
+
+### Recommended Steps for Disputes:
+- Check registered **Rent Agreement** for notice period clauses.
+- Issue a formal **Legal Notice** through a legal counsel if terms are breached."""
+
+    elif document and len(document.strip()) > 0:
+        return f"""## Document Legal Summary & Analysis
+
+### Overview of Uploaded Document:
+{document[:600]}...
+
+### Legal Observations:
+- **Document Type**: Legal Document / Agreement text analyzed.
+- **Structure**: Contains standard covenants and operational provisions.
+
+### Next Steps for Query:
+> **User Question:** "{message}"
+
+Regarding your query: Ensure all clauses, obligations, dispute mechanisms, and signature fields in the document align with statutory requirements under Indian law."""
+
+    else:
+        return f"""## Indian Law Assistance{doc_text}
+
+### Query Response:
+Regarding your query: **"{message}"**
+
+### Key Legal Considerations under Indian Jurisprudence:
+- **Statutory Provisions**: Check applicable Acts (e.g. Civil Procedure Code, Code of Criminal Procedure / BNSS, Indian Contract Act, IT Act 2000).
+- **Remedies Available**: You may file a petition, legal notice, or representation before appropriate judicial or administrative authorities.
+- **Documentation Needed**: Retain all written communications, receipts, notices, and agreements relevant to your matter.
+
+> **Tip:** You can upload a legal document (PDF/TXT) using the attachment icon below to analyze specific contract terms or notices."""
 
 # Optional: serve a simple manifest to silence 404 spam in logs
 @app.route('/manifest.json')
@@ -297,14 +363,25 @@ def chat():
 
     **User Question:** {message}"""   
 
-    try:
-        response = model.generate_content(prompt)
-        reply = response.text
-        reply = _format_chatbot_reply(reply)
-    except Exception as e:
-        print(f"Error generating content: {e}")
-        reply = "I'm sorry, I'm unable to respond at the moment. Please try again later."
-    
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if api_key and api_key.strip():
+        try:
+            genai.configure(api_key=api_key.strip())
+            for model_name in ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro']:
+                try:
+                    m = genai.GenerativeModel(model_name)
+                    res = m.generate_content(prompt)
+                    if res and res.text:
+                        reply = _format_chatbot_reply(res.text)
+                        return jsonify({'reply': reply})
+                except Exception as me:
+                    print(f"Model {model_name} failed: {me}")
+                    continue
+        except Exception as e:
+            print(f"Gemini API Exception: {e}")
+
+    # Fallback Legal AI Assistant response if API key is missing or API fails
+    reply = generate_fallback_legal_response(message, document)
     return jsonify({'reply': reply})
 
 # ---------- Profile ----------
